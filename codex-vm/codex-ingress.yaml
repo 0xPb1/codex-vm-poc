@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: codex-ingress
+spec:
+  rules:
+    - host: codex-vm.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: codex-frontend
+                port:
+                  number: 3000
+    - host: codex-api.in
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: codex-backend
+                port:
+                  number: 4000

@@ -1,0 +1,128 @@
+labels:
+  org: platform
+  superpod: platform
+  pod: infrastructre
+  subpod: security
+  env: stage
+  app: codex
+  tier: t1
+
+resources:
+  limits: 
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+replicaCount: 1
+
+image:
+  codexScanner: public.ecr.aws/f9o7b7m0/codex
+  codexBackend: public.ecr.aws/f9o7b7m0/codex-backend
+  codexFrontend: public.ecr.aws/f9o7b7m0/codex-frontend
+  redis: redis
+  mongo: mongo
+  pullPolicy: Always
+  tag: ""
+
+# imagePullSecrets:
+#   - name: ecr-creds
+
+rbac:
+  create: true
+
+namespace: "default"
+roleName: "codex-job-creator"
+roleBindingName: "codex-job-creator-binding"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: 
+    iam.gke.io/gcp-service-account: security-team-llm@stage-bgv-applayer-01-d020.iam.gserviceaccount.com 
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: codex-sa
+  gsaName: security-team-llm
+  gcpProjectName: stage-bgv-applayer-01-d020
+
+service:
+  frontend:
+    type: NodePort # Change to NodePort to expose the service externally
+    port: 3000
+    nodePort: 30001 # Optional: Specify a fixed NodePort, or let Kubernetes assign one
+  backend:
+    type: NodePort # Change to NodePort to expose the service externally
+    port: 4000
+    nodePort: 30002 # Optional: Specify a fixed NodePort, or let Kubernetes assign one
+  redis:
+    type: ClusterIP # Redis can remain as ClusterIP if it's only accessed internally
+    port: 6379
+  mongo:
+    type: ClusterIP # Mongo can remain as ClusterIP if it's only accessed internally
+    port: 27017
+
+# Optionally specified fixed nodePort values for frontend and backend. These values are in the range of 30000-32767, which is the default range for NodePorts. You can omit these if you want Kubernetes to assign ports automatically.
+
+
+ingress:
+  enabled: false
+  ingressClassName: nginx
+  activateTLS: false
+  hosts:
+    - host: codex-frontend.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: codex-frontend
+              port:
+                number: 3000
+    - host: codex-backend.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: codex-backend
+              port:
+                number: 4000
+  tls:
+    - hosts:
+        - codex-backend.local
+      secretName: tls-secret
+
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true

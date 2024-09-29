@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codex-backend
+  labels:
+    org: platform
+    superpod: platform
+    pod: infrastructure
+    subpod: security
+    env: stage
+    app: codex
+    tier: t1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: codex-backend
+  template:
+    metadata:
+      labels:
+        app: codex-backend
+        tier: backend
+    spec:
+      serviceAccountName: codex-sa
+      containers:
+        - name: codex-backend
+          image: public.ecr.aws/f9o7b7m0/codex-backend
+          ports:
+            - containerPort: 4000
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          envFrom:
+            - secretRef:
+                name: codex-default-secrets

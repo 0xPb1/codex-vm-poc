@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codex-frontend
+  labels:
+    org: platform
+    superpod: platform
+    pod: infrastructure
+    subpod: security
+    env: stage
+    app: codex
+    tier: t1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: codex-frontend
+  template:
+    metadata:
+      labels:
+        app: codex-frontend
+        tier: frontend
+    spec:
+      serviceAccountName: codex-sa
+      containers:
+        - name: codex-frontend
+          image: public.ecr.aws/f9o7b7m0/codex-frontend
+          ports:
+            - containerPort: 3000
+          envFrom:
+                  - secretRef:
+                      name: codex-vm-fe-secret
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+      

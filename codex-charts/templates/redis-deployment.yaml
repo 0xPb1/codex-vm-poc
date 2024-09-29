@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-codex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-codex
+  template:
+    metadata:
+      labels:
+        app: redis-codex
+    spec:
+      containers:
+        - name: redis-codex
+          image: {{ .Values.image.redis }}
+          ports:
+            - containerPort: 6379

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-codex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-codex
+  template:
+    metadata:
+      labels:
+        app: mongo-codex
+    spec:
+      containers:
+        - name: mongo-codex
+          image: {{ .Values.image.mongo }}
+          ports:
+            - containerPort: 27017
