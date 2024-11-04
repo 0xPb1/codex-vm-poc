@@ -5,7 +5,7 @@ metadata:
   namespace: default
 type: Opaque
 data:
-  aws_access_key_id: QUtJQTJVQzNCU1hNTkFWQ0hTNEE=  # Replace with base64-encoded value
-  aws_secret_access_key: OVRmNDliRkJ6Zk1LY0pXTG1aR3dOYmJCMTc3SGkrV3d3c3N3R3h6OUE=  # Replace with base64-encoded value
+  aws_access_key_id: cmFuZG9tdGVzdGluZwo=  # Replace with base64-encoded value
+  aws_secret_access_key: cmFuZG9tdGVzdGluZ3RoZWF3c3NlY3JldAo=  # Replace with base64-encoded value
   output: anNvbgo=  # "json" in base64
   region: dXMtZWFzdC0y  # "us-east-2" in base64
