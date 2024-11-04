@@ -1,0 +1,8 @@
+sources:
+  redis:
+    redis1:
+      host: 127.0.0.1
+  s3:
+    s3_1:
+      access_key: AKIA2UC3BSXMNAVCHS4A
+      secret_key: 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
