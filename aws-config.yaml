@@ -4,5 +4,5 @@ sources:
       host: 127.0.0.1
   s3:
     s3_1:
-      access_key: AKIA2UC3BSXMNAVCHS4A
-      secret_key: +
+      access_key: 
+      secret_key: asdasdgfgdffag
